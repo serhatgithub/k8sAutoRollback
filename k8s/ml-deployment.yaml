@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ml-agent
+  template:
+    metadata:
+      labels:
+        app: ml-agent
+    spec:
+      serviceAccountName: ml-agent-sa
+      containers:
+      - name: ml-agent
+        image: serhatsdocker/ml-agent:v1
+        imagePullPolicy: Never
