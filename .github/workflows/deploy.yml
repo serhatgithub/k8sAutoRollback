@@ -12,21 +12,25 @@ jobs:
       - name: Kodları İndir
         uses: actions/checkout@v4
 
-      - name: Minikube Docker Ortamını Al
-        run: eval $(minikube -p minikube docker-env)
-
       - name: 1. ML Modelini Eğit
         run: |
           cd ml
           pip install -r requirements.txt || true
           python train_model.py
 
-      - name: 2. Image'ları Build Et
+      - name: 2. Image'ları Build Et ve Yükle
         run: |
-          eval $(minikube -p minikube docker-env)
+          echo "Image'lar Build Ediliyor..."
+          # Normal Docker Build (Senin PC'nin Docker'ı)
           docker build -t serhatsdocker/go-app:v4 ./app
           docker build -t serhatsdocker/chaos-app:v2 ./chaos
           docker build -t serhatsdocker/ml-agent:v1 ./ml
+
+          echo "Minikube İçine Yükleniyor (Load)..."
+          # Image'ları Minikube Cluster'ının içine el ile itiyoruz
+          minikube image load serhatsdocker/go-app:v4
+          minikube image load serhatsdocker/chaos-app:v2
+          minikube image load serhatsdocker/ml-agent:v1
 
       - name: 3. Kubernetes'e Uygula (v2 Başlat)
         run: |
