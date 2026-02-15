@@ -15,7 +15,7 @@ spec:
       containers:
       - name: chaos
         image: serhatsdocker/chaos-app:v2
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Never
         env:
         - name: TARGET_URL
           value: "http://app-service:8080"
